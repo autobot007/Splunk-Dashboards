@@ -1,0 +1,75 @@
+<form>
+  <label>Cascading-Inputs-Sales_by_Country</label>
+  <fieldset submitButton="false">
+    <input type="dropdown" token="myCountry" searchWhenChanged="true">
+      <label>Country</label>
+      <fieldForLabel>Country</fieldForLabel>
+      <fieldForValue>Country</fieldForValue>
+      <search>
+        <query>sourcetype=access_* | iplocation clientip | stats count by Country</query>
+        <earliest>-30d@d</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="dropdown" token="myRegion" searchWhenChanged="true">
+      <label>State</label>
+      <fieldForLabel>Region</fieldForLabel>
+      <fieldForValue>Region</fieldForValue>
+      <search>
+        <query>sourcetype=access_*   | iplocation clientip | search Country=$myCountry|s$ | stats count by Region</query>
+        <earliest>-30d@d</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+    <input type="dropdown" token="myCity" searchWhenChanged="true">
+      <label>City</label>
+      <fieldForLabel>City</fieldForLabel>
+      <fieldForValue>City</fieldForValue>
+      <search>
+        <query>sourcetype=access_*   | iplocation clientip | search Country=$myCountry|s$ Region=$myRegion|s$ | stats count by City</query>
+        <earliest>-30d@d</earliest>
+        <latest>now</latest>
+      </search>
+    </input>
+  </fieldset>
+  <row>
+    <panel>
+      <title>Sale Count</title>
+      <table>
+        <title>count by CategoryId</title>
+        <search>
+          <query>index=main sourcetype=access_* | iplocation clientip | search Country=$myCountry|s$ Region=$myRegion|s$ City=$myCity|s$ | stats count by  categoryId Country Region City | stats list(count), values(categoryId) by Country Region City</query>
+          <earliest>-30d@d</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Country:-$myCountry$
+      State:-$myRegion$
+      City:-$myCity$</title>
+      <map>
+        <title>Map by  CategoryId</title>
+        <search>
+          <query>index=main sourcetype=access_* | iplocation clientip | search Country=$myCountry|s$ Region=$myRegion|s$ City=$myCity|s$ | geostats count by categoryId</query>
+          <earliest>-30d@d</earliest>
+          <latest>now</latest>
+          <sampleRatio>1</sampleRatio>
+        </search>
+        <option name="drilldown">none</option>
+        <option name="height">527</option>
+        <option name="mapping.type">marker</option>
+      </map>
+    </panel>
+  </row>
+</form>

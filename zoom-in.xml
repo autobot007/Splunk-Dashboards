@@ -1,0 +1,33 @@
+<dashboard>
+  <label>zoom-Dashboard</label>
+  <row>
+    <panel>
+      <title>First-Panel</title>
+      <chart>
+        <title>first-panel-report</title>
+        <search ref="first-panel-report"></search>
+        <option name="charting.drilldown">none</option>
+         <selection>
+    <set token="selection_earliest">$start$</set>
+    <set token="selection_latest">$end$</set>
+    <set token="start_splunk_web_access">$start.splunk_web_access$</set>
+    <set token="end_splunk_web_access">$end.splunk_web_access$</set>
+  </selection>
+      </chart>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Second-Panel</title>
+      <chart>
+        <title>second-panel-report</title>
+        <search ref="second-panel-report">
+          <earliest>$selection_earliest$</earliest>
+       <latest>$selection_latest$</latest></search>
+        
+        <option name="charting.drilldown">none</option>
+        
+      </chart>
+    </panel>
+  </row>
+</dashboard>

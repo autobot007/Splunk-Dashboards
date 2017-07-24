@@ -1,0 +1,45 @@
+<dashboard>
+  <label>Post-Process-Dashboard</label>
+  <search id="BaseSearch">
+    <query>index=main sourcetype=access_* | stats count by categoryId  source</query>
+    <earliest>-30d@d</earliest>
+    <latest>now</latest>
+    <sampleRatio>1</sampleRatio>
+  </search>
+  <row>
+    <panel>
+      <title>main events</title>
+      <table>
+        <title>By ProductCategories</title>
+        <search base="BaseSearch">
+          <query>| rename categoryId as "ProductCategories", source as "PointOfSales", count as "NumberOfItems" | head 6</query>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+  <row>
+    <panel>
+      <title>Detail List of Events</title>
+      <table>
+        <title>By DetailCategories</title>
+        <search base="BaseSearch">
+          <query>| stats list(count), list(categoryId) by source</query>
+        </search>
+        <option name="count">20</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">none</option>
+        <option name="percentagesRow">false</option>
+        <option name="rowNumbers">true</option>
+        <option name="totalsRow">false</option>
+        <option name="wrap">true</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
