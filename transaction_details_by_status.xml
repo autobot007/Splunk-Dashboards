@@ -1,0 +1,20 @@
+<dashboard>
+  <label>Transaction Details by Status</label>
+  <row>
+    <panel>
+      <table>
+        <title>Transaction list</title>
+        <search>
+          <query>index="destination" sourcetype="destination:access" method="*" [| inputlookup http_status.csv | where status_description="$status$" | table status] | lookup http_status.csv status  | table _time client_ip server_ip uri method status status_description | rex field=uri "\/destination\/(?&lt;location&gt;\w+)\/"</query>
+          <earliest>0</earliest>
+          <latest></latest>
+        </search>
+        <option name="wrap">true</option>
+        <option name="rowNumbers">false</option>
+        <option name="dataOverlayMode">none</option>
+        <option name="drilldown">cell</option>
+        <option name="count">10</option>
+      </table>
+    </panel>
+  </row>
+</dashboard>
